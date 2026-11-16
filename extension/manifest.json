@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "MD Launcher & Viewer",
+  "version": "1.0.0",
+  "description": "散在するローカルのMarkdownファイルを登録・起動し、Chromeで整形表示します。",
+  "permissions": [
+    "storage",
+    "tabs",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "file:///*.md",
+    "file:///*.markdown"
+  ],
+  "action": {
+    "default_title": "MD Launcher & Viewer",
+    "default_popup": "src/panel.html"
+  },
+  "options_ui": {
+    "page": "src/panel.html?full=1",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "file:///*.md",
+        "file:///*.markdown"
+      ],
+      "js": [
+        "lib/marked.umd.js",
+        "lib/purify.min.js",
+        "lib/highlight.min.js",
+        "src/urlutil.js",
+        "src/render.js",
+        "src/content.js"
+      ],
+      "css": [
+        "lib/github-markdown.css",
+        "lib/hljs.css",
+        "src/render.css"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "minimum_chrome_version": "116",
+  "side_panel": {
+    "default_path": "src/panel.html?side=1"
+  }
+}

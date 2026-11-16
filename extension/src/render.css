@@ -1,0 +1,8 @@
+html { background: #fff; }
+@media (prefers-color-scheme: dark) { html { background: #0d1117; } }
+body.mdlv-root { margin: 0; }
+.mdlv-body { box-sizing: border-box; max-width: 980px; margin: 0 auto; padding: 32px 24px 64px; }
+.mdlv-bar { max-width: 980px; margin: 0 auto; padding: 8px 24px 0; text-align: right; }
+.mdlv-bar button { font: 12px system-ui, sans-serif; padding: 2px 8px; cursor: pointer; }
+.mdlv-source { max-width: 980px; margin: 0 auto; padding: 16px 24px; white-space: pre-wrap; word-wrap: break-word; font: 13px/1.5 ui-monospace, Menlo, monospace; color: #1f2328; }
+@media (prefers-color-scheme: dark) { .mdlv-source { color: #e6edf3; } }
