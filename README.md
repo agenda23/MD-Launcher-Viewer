@@ -1,14 +1,84 @@
 # MD Launcher & Viewer
 
-仕様: `docs/MD Launcher & Viewer 仕様.md`
+散在するローカルの Markdown ファイルをブックマークのように登録して素早く開き、Chrome 上で整形表示する Chrome 拡張機能（Manifest V3）です。
+
+- ローカルの `.md` / `.markdown` を登録してリスト管理（表示名・タグ・メモ・検索）
+- `file:///*.md` を開くと自動で Markdown レンダリング（GFM・コードハイライト・ダーク/ライト対応）
+- ポップアップ・サイドパネル・設定ページの3か所から同じリストを操作
+- ビルド不要・外部通信なし（ライブラリは同梱）
+
+詳細な仕様は [`docs/MD Launcher & Viewer 仕様.md`](docs/MD%20Launcher%20%26%20Viewer%20仕様.md) を参照してください。
+
+## 動作要件
+
+- Google Chrome 116 以上（サイドパネル API を使用）
 
 ## インストール
-1. `chrome://extensions` で「デベロッパーモード」をON
-2. 「パッケージ化されていない拡張機能を読み込む」→ `extension/` を選択
-3. 本拡張の詳細画面で **「ファイルのURLへのアクセスを許可する」** をON
 
-## 構成
-- `extension/src/panel.*` 登録リストUI（ポップアップ／オプションページ）
-- `extension/src/content.js` `file:///*.md` のレンダリング
-- `extension/src/viewer.*` ダウンロード扱いになる環境向けフォールバック
-- `extension/lib/` marked / DOMPurify / highlight.js / github-markdown-css（バンドル済み）
+1. `chrome://extensions` を開き、右上の「デベロッパーモード」を ON にする
+2. 「パッケージ化されていない拡張機能を読み込む」で `extension/` フォルダを選択する
+3. 本拡張の「詳細」画面で **「ファイルの URL へのアクセスを許可する」** を ON にする（初回のみ）
+
+> ON にしないとローカルファイルのレンダリングができません。未許可の場合は拡張機能の画面に案内が表示されます。
+
+## 使い方
+
+### ファイルを登録する
+
+ブラウザの制約でドラッグ＆ドロップではフルパスを取得できないため、次の方法で登録します。
+
+| 方法 | 手順 |
+| --- | --- |
+| 今のタブを登録 | `.md` を Chrome にドラッグ＆ドロップして開き、「＋このファイルを登録」を押す |
+| 開いているタブを一括登録 | 複数の `.md` を Chrome で開き、「開いている .md タブをすべて登録」を押す |
+| パスを貼り付けて登録 | 「パスを貼り付けて追加」に絶対パスまたは `file://` URL を1行1件で貼り付ける |
+
+重複（同じ URL）は追加されず、追加・重複・無効の件数が表示されます。
+
+### リストから開く
+
+項目名をクリックすると、該当ファイルをタブで開きます。すでに開いているタブがあればフォーカスしてリロードします。ファイルが移動・削除されている場合は Chrome 標準の「ファイルが見つかりません」画面が表示されるので、不要な項目は一覧から削除してください（ファイル自体は削除されません）。
+
+### 管理
+
+- **編集**：表示名（同名の `README.md` の区別に便利）、タグ（カンマ区切り）、メモ
+- **検索・絞り込み**：表示名・パス・タグ・メモの全文検索、タグでの絞り込み
+- **サイドパネル**：ポップアップの「サイドパネル」ボタンで開く。開いたままタブ切り替えに追従します
+
+### ビューア表示
+
+レンダリング結果は右上の「ソース表示」で元テキストと切り替えられます。サニタイズ済みのため、Markdown 内の生 HTML によるスクリプトは実行されません。相対パスの画像・リンクは元ファイル基準で解決されます。
+
+## トラブルシューティング
+
+- **`.md` がレンダリングされずダウンロードされる**：環境によっては Chrome が `file://` の `.md` をダウンロード扱いにします。パネル下部の「ビューアページで開く」を ON にすると、拡張内のビューア（`viewer.html`）で表示します。
+- **何も表示されない／案内が出る**：「ファイルの URL へのアクセスを許可する」が ON か確認してください。
+- **拡張子 `.MD`（大文字）が自動表示されない**：Content Script のマッチ対象は小文字の `.md` / `.markdown` のみです（登録自体は大文字小文字を問いません）。
+
+## プロジェクト構成
+
+```
+docs/                    仕様書
+extension/
+├─ manifest.json
+├─ lib/                  marked / DOMPurify / highlight.js / github-markdown-css（同梱）
+└─ src/
+   ├─ panel.html|js|css  登録リスト UI（ポップアップ／サイドパネル／設定ページ共用）
+   ├─ content.js         file:///*.md のレンダリング
+   ├─ viewer.html|js     ダウンロード扱いになる環境向けフォールバックビューア
+   ├─ render.js|css      Markdown → サニタイズ済み HTML の共通描画
+   └─ urlutil.js         file:// URL の判定・正規化
+```
+
+## 権限
+
+| 権限 | 用途 |
+| --- | --- |
+| `storage` | 登録リスト・設定の保存（`chrome.storage.local`。ファイル内容は保存しない） |
+| `tabs` | タブの URL 取得・フォーカス・リロード |
+| `sidePanel` | サイドパネル表示 |
+| `file:///*.md`, `file:///*.markdown` | ローカル Markdown のレンダリング |
+
+## 同梱ライブラリ
+
+[marked](https://github.com/markedjs/marked)、[DOMPurify](https://github.com/cure53/DOMPurify)、[highlight.js](https://github.com/highlightjs/highlight.js)、[github-markdown-css](https://github.com/sindresorhus/github-markdown-css)（各ライセンスはそれぞれのリポジトリを参照）
