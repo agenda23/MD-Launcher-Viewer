@@ -32,16 +32,52 @@
     return h1 ? h1.textContent.trim() : '';
   }
 
+  function mountThemeBar(bar, body) {
+    const themeBtn = document.createElement('button');
+    themeBtn.type = 'button';
+    themeBtn.title = 'ライト／ダーク表示を切り替え';
+    bar.appendChild(themeBtn);
+    let mdTheme = MDTheme.SYSTEM;
+
+    const syncThemeUi = () => {
+      MDTheme.apply(mdTheme, body);
+      themeBtn.textContent = MDTheme.toggleLabel(mdTheme);
+      MDTheme.watchSystem(mdTheme, body, () => { themeBtn.textContent = MDTheme.toggleLabel(mdTheme); });
+    };
+
+    themeBtn.addEventListener('click', async () => {
+      mdTheme = MDTheme.toggleTarget(mdTheme);
+      await MDTheme.writeSetting(mdTheme);
+      syncThemeUi();
+    });
+
+    MDTheme.readSetting().then((t) => {
+      mdTheme = t;
+      syncThemeUi();
+    });
+
+    chrome.storage.onChanged.addListener((ch, area) => {
+      if (area !== 'local' || !ch.settings) return;
+      const next = ch.settings.newValue && ch.settings.newValue.mdTheme;
+      if (next === 'light' || next === 'dark' || next === MDTheme.SYSTEM) {
+        mdTheme = next;
+        syncThemeUi();
+      }
+    });
+  }
+
   // レンダリング／ソース表示の切り替えUI付きで描画
   function mount(root, text, baseUrl, opts) {
     root.textContent = '';
     const bar = document.createElement('div');
     bar.className = 'mdlv-bar';
-    const btn = document.createElement('button');
-    btn.textContent = 'ソース表示';
-    bar.appendChild(btn);
     const body = document.createElement('article');
     body.className = 'markdown-body mdlv-body';
+    mountThemeBar(bar, body);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = 'ソース表示';
+    bar.appendChild(btn);
     const src = document.createElement('pre');
     src.className = 'mdlv-source';
     src.hidden = true;

@@ -3,7 +3,7 @@
   const $ = (id) => document.getElementById(id);
   const VIEWER = chrome.runtime.getURL('src/viewer.html');
   let items = [];
-  let settings = { useViewer: false };
+  let settings = { useViewer: false, mdTheme: 'system' };
   let editingId = null;
 
   const params = new URLSearchParams(location.search);
@@ -186,6 +186,8 @@
     chrome.extension.isAllowedFileSchemeAccess((ok) => { $('banner').hidden = ok; });
     $('useViewer').checked = settings.useViewer;
     $('useViewer').addEventListener('change', () => { settings.useViewer = $('useViewer').checked; save(); });
+    $('mdTheme').value = settings.mdTheme === 'light' || settings.mdTheme === 'dark' ? settings.mdTheme : 'system';
+    $('mdTheme').addEventListener('change', () => { settings.mdTheme = $('mdTheme').value; save(); });
     $('addCurrent').addEventListener('click', addCurrent);
     $('addAllTabs').addEventListener('click', addAllTabs);
     $('pasteAdd').addEventListener('click', addPasted);
@@ -207,6 +209,7 @@
       if (area !== 'local' || (!ch.items && !ch.settings)) return;
       await load();
       $('useViewer').checked = settings.useViewer;
+      $('mdTheme').value = settings.mdTheme === 'light' || settings.mdTheme === 'dark' ? settings.mdTheme : 'system';
       render();
     });
 

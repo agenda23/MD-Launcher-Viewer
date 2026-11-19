@@ -1,8 +1,83 @@
 html { background: #fff; }
-@media (prefers-color-scheme: dark) { html { background: #0d1117; } }
+@media (prefers-color-scheme: dark) { html:not([data-theme]) { background: #0d1117; } }
+html[data-theme="light"] { background: #fff; color-scheme: light; }
+html[data-theme="dark"] { background: #0d1117; color-scheme: dark; }
+
 body.mdlv-root { margin: 0; }
 .mdlv-body { box-sizing: border-box; max-width: 980px; margin: 0 auto; padding: 32px 24px 64px; }
-.mdlv-bar { max-width: 980px; margin: 0 auto; padding: 8px 24px 0; text-align: right; }
+.mdlv-bar { max-width: 980px; margin: 0 auto; padding: 8px 24px 0; display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
 .mdlv-bar button { font: 12px system-ui, sans-serif; padding: 2px 8px; cursor: pointer; }
 .mdlv-source { max-width: 980px; margin: 0 auto; padding: 16px 24px; white-space: pre-wrap; word-wrap: break-word; font: 13px/1.5 ui-monospace, Menlo, monospace; color: #1f2328; }
-@media (prefers-color-scheme: dark) { .mdlv-source { color: #e6edf3; } }
+@media (prefers-color-scheme: dark) { html:not([data-theme]) .mdlv-source { color: #e6edf3; } }
+html[data-theme="light"] .mdlv-source { color: #1f2328; }
+html[data-theme="dark"] .mdlv-source { color: #e6edf3; }
+
+/* システム設定と異なるテーマを手動指定するとき（github-markdown.css はメディアクエリ前提のため） */
+.markdown-body[data-theme="dark"] {
+  color-scheme: dark;
+  --fgColor-accent: #4493f8;
+  --bgColor-attention-muted: #bb800926;
+  --bgColor-default: #0d1117;
+  --bgColor-muted: #151b23;
+  --bgColor-neutral-muted: #656c7633;
+  --borderColor-accent-emphasis: #1f6feb;
+  --borderColor-attention-emphasis: #9e6a03;
+  --borderColor-danger-emphasis: #da3633;
+  --borderColor-default: #3d444d;
+  --borderColor-done-emphasis: #8957e5;
+  --borderColor-success-emphasis: #238636;
+  --fgColor-attention: #d29922;
+  --fgColor-danger: #f85149;
+  --fgColor-default: #f0f6fc;
+  --fgColor-done: #ab7df8;
+  --fgColor-muted: #9198a1;
+  --fgColor-success: #3fb950;
+  --borderColor-muted: #3d444db3;
+  --focus-outlineColor: var(--borderColor-accent-emphasis);
+  --borderColor-neutral-muted: var(--borderColor-muted);
+}
+.markdown-body[data-theme="light"] {
+  color-scheme: light;
+  --fgColor-danger: #d1242f;
+  --bgColor-attention-muted: #fff8c5;
+  --bgColor-muted: #f6f8fa;
+  --bgColor-neutral-muted: #818b981f;
+  --borderColor-accent-emphasis: #0969da;
+  --borderColor-attention-emphasis: #9a6700;
+  --borderColor-danger-emphasis: #cf222e;
+  --borderColor-default: #d1d9e0;
+  --borderColor-done-emphasis: #8250df;
+  --borderColor-success-emphasis: #1a7f37;
+  --fgColor-accent: #0969da;
+  --fgColor-attention: #9a6700;
+  --fgColor-done: #8250df;
+  --fgColor-muted: #59636e;
+  --fgColor-success: #1a7f37;
+  --bgColor-default: #ffffff;
+  --borderColor-muted: #d1d9e0b3;
+  --fgColor-default: #1f2328;
+  --focus-outlineColor: var(--borderColor-accent-emphasis);
+  --borderColor-neutral-muted: var(--borderColor-muted);
+}
+
+/* highlight.js：手動テーマ（OS 設定と逆のとき） */
+html[data-theme="light"] .hljs{color:#24292e;background:#fff}
+html[data-theme="light"] .hljs-doctag,html[data-theme="light"] .hljs-keyword,html[data-theme="light"] .hljs-meta .hljs-keyword,html[data-theme="light"] .hljs-template-tag,html[data-theme="light"] .hljs-template-variable,html[data-theme="light"] .hljs-type,html[data-theme="light"] .hljs-variable.language_{color:#d73a49}
+html[data-theme="light"] .hljs-title,html[data-theme="light"] .hljs-title.class_,html[data-theme="light"] .hljs-title.class_.inherited__,html[data-theme="light"] .hljs-title.function_{color:#6f42c1}
+html[data-theme="light"] .hljs-attr,html[data-theme="light"] .hljs-attribute,html[data-theme="light"] .hljs-literal,html[data-theme="light"] .hljs-meta,html[data-theme="light"] .hljs-number,html[data-theme="light"] .hljs-operator,html[data-theme="light"] .hljs-selector-attr,html[data-theme="light"] .hljs-selector-class,html[data-theme="light"] .hljs-selector-id,html[data-theme="light"] .hljs-variable{color:#005cc5}
+html[data-theme="light"] .hljs-meta .hljs-string,html[data-theme="light"] .hljs-regexp,html[data-theme="light"] .hljs-string{color:#032f62}
+html[data-theme="light"] .hljs-built_in,html[data-theme="light"] .hljs-symbol{color:#e36209}
+html[data-theme="light"] .hljs-code,html[data-theme="light"] .hljs-comment,html[data-theme="light"] .hljs-formula{color:#6a737d}
+html[data-theme="light"] .hljs-name,html[data-theme="light"] .hljs-quote,html[data-theme="light"] .hljs-selector-pseudo,html[data-theme="light"] .hljs-selector-tag{color:#22863a}
+html[data-theme="light"] .hljs-subst{color:#24292e}
+html[data-theme="light"] .hljs-section{color:#005cc5;font-weight:700}
+html[data-theme="dark"] .hljs{color:#c9d1d9;background:#0d1117}
+html[data-theme="dark"] .hljs-doctag,html[data-theme="dark"] .hljs-keyword,html[data-theme="dark"] .hljs-meta .hljs-keyword,html[data-theme="dark"] .hljs-template-tag,html[data-theme="dark"] .hljs-template-variable,html[data-theme="dark"] .hljs-type,html[data-theme="dark"] .hljs-variable.language_{color:#ff7b72}
+html[data-theme="dark"] .hljs-title,html[data-theme="dark"] .hljs-title.class_,html[data-theme="dark"] .hljs-title.class_.inherited__,html[data-theme="dark"] .hljs-title.function_{color:#d2a8ff}
+html[data-theme="dark"] .hljs-attr,html[data-theme="dark"] .hljs-attribute,html[data-theme="dark"] .hljs-literal,html[data-theme="dark"] .hljs-meta,html[data-theme="dark"] .hljs-number,html[data-theme="dark"] .hljs-operator,html[data-theme="dark"] .hljs-selector-attr,html[data-theme="dark"] .hljs-selector-class,html[data-theme="dark"] .hljs-selector-id,html[data-theme="dark"] .hljs-variable{color:#79c0ff}
+html[data-theme="dark"] .hljs-meta .hljs-string,html[data-theme="dark"] .hljs-regexp,html[data-theme="dark"] .hljs-string{color:#a5d6ff}
+html[data-theme="dark"] .hljs-built_in,html[data-theme="dark"] .hljs-symbol{color:#ffa657}
+html[data-theme="dark"] .hljs-code,html[data-theme="dark"] .hljs-comment,html[data-theme="dark"] .hljs-formula{color:#8b949e}
+html[data-theme="dark"] .hljs-name,html[data-theme="dark"] .hljs-quote,html[data-theme="dark"] .hljs-selector-pseudo,html[data-theme="dark"] .hljs-selector-tag{color:#7ee787}
+html[data-theme="dark"] .hljs-subst{color:#c9d1d9}
+html[data-theme="dark"] .hljs-section{color:#1f6feb;font-weight:700}
